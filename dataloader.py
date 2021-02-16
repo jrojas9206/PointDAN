@@ -73,6 +73,47 @@ class Modelnet40_data(data.Dataset):
     def __len__(self):
         return len(self.pc_list)
 
+class AppleTreeData(data.Dataset):
+    def __init__(self, pc_root, status='train', pc_input_num=1024, aug=True):
+        #super(Modelnet40_data, self).__init__()
+
+        self.status = status
+        self.pc_list = []
+        self.lbl_list = []
+        self.pc_input_num = pc_input_num
+        self.aug = aug
+
+        categorys = glob.glob(os.path.join(pc_root, '*'))
+        categorys = [c.split(os.path.sep)[-1] for c in categorys]
+        # sorted(categorys)
+        categorys = sorted(categorys)
+
+        if status == 'train':
+            npy_list = glob.glob(os.path.join(pc_root, '*', 'train', '*.npy')) 
+        else:
+            npy_list = glob.glob(os.path.join(pc_root, '*', 'test', '*.npy'))
+        # names_dict = get_info(npy_list, isView=False)
+
+        for _dir in npy_list:
+            self.pc_list.append(_dir)
+            self.lbl_list.append(categorys.index(_dir.split('/')[-3]))
+
+        print(f'{status} data num: {len(self.pc_list)}')
+
+    def __getitem__(self, idx):
+        lbl = self.lbl_list[idx]
+        pc = np.load(self.pc_list[idx])[:self.pc_input_num].astype(np.float32)
+        pc = normal_pc(pc)
+        if self.aug:
+            pc = rotation_point_cloud(pc)
+            pc = jitter_point_cloud(pc)
+        # print(pc.shape)
+        pc = np.expand_dims(pc.transpose(), axis=2)
+        return torch.from_numpy(pc).type(torch.FloatTensor), lbl
+
+    def __len__(self):
+        return len(self.pc_list)
+
 
 class Shapenet_data(data.Dataset):
     def __init__(self, pc_root, status='train', pc_input_num=1024, aug=True, data_type='*.npy'):
@@ -172,8 +213,9 @@ class Scannet_data_h5(data.Dataset):
 
 if __name__ == "__main__":
     # data = Modelnet40_data(num_points=1024,train=False)
-    data = Shapenet_data(pc_root='/home/youhaoxuan/data/Modelnet_Shapenet/shapenet', status='validate')
-    # data = Modelnet40_data(pc_root='/home/youhaoxuan/data/Modelnet_Shapenet/modelnet40', status='train')
+    #data = Shapenet_data(pc_root='/mnt/76db166d-2c59-4b55-9a91-19935005e2ef/repos/PointDAN/dataset/PointDA_data/shapenet', status='train')
+    #data = Modelnet40_data(pc_root='/mnt/76db166d-2c59-4b55-9a91-19935005e2ef/repos/PointDAN/dataset/PointDA_data/modelnet/', status='train')
+    data = AppleTreeData(pc_root="/mnt/76db166d-2c59-4b55-9a91-19935005e2ef/annotated_data_realTrees/gr/")
     print (len(data))
     point, label = data[0]
     print (point.shape, label)
