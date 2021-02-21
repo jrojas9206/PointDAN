@@ -54,6 +54,7 @@ class Modelnet40_data(data.Dataset):
         # names_dict = get_info(npy_list, isView=False)
 
         for _dir in npy_list:
+            print(_dir)
             self.pc_list.append(_dir)
             self.lbl_list.append(categorys.index(_dir.split('/')[-3]))
 
@@ -74,7 +75,7 @@ class Modelnet40_data(data.Dataset):
         return len(self.pc_list)
 
 class AppleTreeData(data.Dataset):
-    def __init__(self, pc_root, status='train', pc_input_num=1024, aug=True):
+    def __init__(self, pc_root, status='train', pc_input_num=1024, aug=False):
         #super(Modelnet40_data, self).__init__()
 
         self.status = status
@@ -89,9 +90,9 @@ class AppleTreeData(data.Dataset):
         categorys = sorted(categorys)
 
         if status == 'train':
-            npy_list = glob.glob(os.path.join(pc_root, '*', 'train', '*.npy')) 
+            npy_list = glob.glob(os.path.join(pc_root, 'train', '*.npy')) 
         else:
-            npy_list = glob.glob(os.path.join(pc_root, '*', 'test', '*.npy'))
+            npy_list = glob.glob(os.path.join(pc_root, 'test', '*.npy'))
         # names_dict = get_info(npy_list, isView=False)
 
         for _dir in npy_list:
@@ -215,7 +216,7 @@ if __name__ == "__main__":
     # data = Modelnet40_data(num_points=1024,train=False)
     #data = Shapenet_data(pc_root='/mnt/76db166d-2c59-4b55-9a91-19935005e2ef/repos/PointDAN/dataset/PointDA_data/shapenet', status='train')
     #data = Modelnet40_data(pc_root='/mnt/76db166d-2c59-4b55-9a91-19935005e2ef/repos/PointDAN/dataset/PointDA_data/modelnet/', status='train')
-    data = AppleTreeData(pc_root="/mnt/76db166d-2c59-4b55-9a91-19935005e2ef/annotated_data_realTrees/gr/")
+    data = AppleTreeData(pc_root="/mnt/c/sharedUbuntu/annotatedRealTrees/noFloor/train", status="train", pc_input_num=32500, aug=False)
     print (len(data))
     point, label = data[0]
     print (point.shape, label)
