@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from model_pointnet import Pointnet_cls
 import Model
-from dataloader import Modelnet40_data, Shapenet_data, Scannet_data_h5
+from dataloader import Modelnet40_data, Shapenet_data, Scannet_data_h5, AppleTreeData
 from torch.autograd import Variable
 import time
 import numpy as np
@@ -59,7 +59,7 @@ def main():
 
     # Data loading
 
-    data_func={'modelnet': Modelnet40_data, 'scannet': Scannet_data_h5, 'shapenet': Shapenet_data}
+    data_func={'modelnet': Modelnet40_data, 'scannet': Scannet_data_h5, 'shapenet': Shapenet_data, "sapples":AppleTreeData, "rapples":AppleTreeData }
 
     source_train_dataset = data_func[args.source](pc_input_num=1024, status='train', aug=True, pc_root = dir_root + args.source)
     target_train_dataset1 = data_func[args.target](pc_input_num=1024, status='train', aug=True,  pc_root = dir_root + args.target)
