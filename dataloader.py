@@ -90,9 +90,9 @@ class AppleTreeData(data.Dataset):
         categorys = sorted(categorys)
 
         if status == 'train':
-            npy_list = glob.glob(os.path.join(pc_root, 'train', '*.npy')) 
+            npy_list = glob.glob(os.path.join(pc_root, "*", 'train', '*.npy')) 
         else:
-            npy_list = glob.glob(os.path.join(pc_root, 'test', '*.npy'))
+            npy_list = glob.glob(os.path.join(pc_root, "*",'test', '*.npy'))
         # names_dict = get_info(npy_list, isView=False)
 
         for _dir in npy_list:

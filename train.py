@@ -221,6 +221,7 @@ def main():
             acc_to_all_class = torch.zeros(10,10)
 
             for batch_idx, (data,label) in enumerate(target_test_dataloader1):
+                print(data.size(0))
                 data = data.to(device=device)
                 label = label.to(device=device).long()
                 pred1, pred2 = model(data)
